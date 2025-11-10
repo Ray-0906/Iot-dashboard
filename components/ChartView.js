@@ -11,61 +11,91 @@ export default function ChartView({ tempHistory = [], humHistory = [] }) {
   if (!hasData) {
     return (
       <View style={styles.placeholder}>
-        <Text style={styles.placeholderText}>Waiting for data...</Text>
+        <Text style={styles.placeholderText}>📊 Waiting for data...</Text>
       </View>
     );
   }
 
   return (
-    <LineChart
-      data={{
-        labels: Array.from({ length: safeTempHistory.length }, () => ""),
-        datasets: [
-          {
-            data: safeTempHistory,
-            color: () => "#ff6b6b",
-            strokeWidth: 2
+    <View style={styles.container}>
+      <Text style={styles.chartTitle}>📈 Trends</Text>
+      <LineChart
+        data={{
+          labels: Array.from({ length: Math.min(safeTempHistory.length, 10) }, () => ""),
+          datasets: [
+            {
+              data: safeTempHistory.slice(-10),
+              color: () => "#ee5a6f",
+              strokeWidth: 3
+            },
+            {
+              data: safeHumHistory.slice(-10),
+              color: () => "#4a90e2",
+              strokeWidth: 3
+            }
+          ],
+          legend: ["🌡️ Temperature", "💧 Humidity"]
+        }}
+        width={screenWidth - 32}
+        height={240}
+        chartConfig={{
+          backgroundColor: "#1a2332",
+          backgroundGradientFrom: "#1a2332",
+          backgroundGradientTo: "#1a2332",
+          decimalPlaces: 1,
+          color: opacity => `rgba(127, 140, 151, ${opacity})`,
+          labelColor: opacity => `rgba(127, 140, 151, ${opacity})`,
+          propsForDots: {
+            r: "4",
+            strokeWidth: "2"
           },
-          {
-            data: safeHumHistory,
-            color: () => "#4da6ff",
-            strokeWidth: 2
+          propsForBackgroundLines: {
+            strokeDasharray: "",
+            stroke: "#2a3442",
+            strokeWidth: 1
           }
-        ],
-        legend: ["Temperature", "Humidity"]
-      }}
-      width={screenWidth - 20}
-      height={220}
-      chartConfig={{
-        backgroundColor: "#1E1E1E",
-        backgroundGradientFrom: "#1E1E1E",
-        backgroundGradientTo: "#333",
-        color: opacity => `rgba(255, 255, 255, ${opacity})`,
-        labelColor: opacity => `rgba(255, 255, 255, ${opacity})`,
-        propsForDots: {
-          r: "3"
-        }
-      }}
-      bezier
-      style={styles.chart}
-    />
+        }}
+        bezier
+        style={styles.chart}
+        withInnerLines={true}
+        withOuterLines={false}
+        withVerticalLines={false}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#1a2332",
+    borderRadius: 20,
+    padding: 16,
+    marginVertical: 12,
+    borderWidth: 1,
+    borderColor: "#2a3442"
+  },
+  chartTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12
+  },
   chart: {
-    marginVertical: 16,
-    borderRadius: 12
+    marginVertical: 8,
+    borderRadius: 16
   },
   placeholder: {
-    height: 220,
+    height: 240,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#1E1E1E",
-    borderRadius: 12,
-    marginVertical: 16
+    backgroundColor: "#1a2332",
+    borderRadius: 20,
+    marginVertical: 12,
+    borderWidth: 1,
+    borderColor: "#2a3442"
   },
   placeholderText: {
-    color: "#777"
+    color: "#7f8c97",
+    fontSize: 16
   }
 });
